@@ -5,3 +5,4 @@
 *.ipr
 
 /cmake-build-debug/**
+/lib/**
