@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
 set(CMAKE_C_COMPILER avr-gcc)
+SET(CMAKE_RANLIB avr-ranlib)
 include_directories(include)
 add_library(avr-hd44780 include/hd44780.h src/hd44780.c)
