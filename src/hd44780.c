@@ -1,6 +1,9 @@
 #include <hd44780.h>
 #include <util/delay.h>
 
+#define sbi(port,bit) (port) |= (1 << (bit))
+#define cbi(port,bit) (port) &= ~(1 << (bit))
+
 LcdPort *_portRs;
 LcdPort *_portRw;
 LcdPort *_portE;
@@ -15,14 +18,6 @@ LcdDataPort *_portD6;
 LcdDataPort *_portD7;
 
 Bits bits;
-
-void sbi(uint8_t *data, uint8_t bit) {
-    *data |= (1 << bit);
-}
-
-void cbi(uint8_t *data, uint8_t bit) {
-    *data &= ~(1 << bit);
-}
 
 void setBit(LcdPort *lcdPort) {
     *lcdPort->avrPort |= (1 << lcdPort->avrPin);
@@ -108,9 +103,9 @@ uint8_t readBits(uint8_t startBit, uint8_t endBit) {
         int result = *port->avrPinPort & mask;
 
         if (result != 0) {
-            sbi(&data, bit);
+            sbi(data, bit);
         } else {
-            cbi(&data, bit);
+            cbi(data, bit);
         }
     }
 
@@ -325,31 +320,31 @@ void lcdFunctionSet(FontSize fontSize, LineCount lineCount) {
 
     uint8_t data = 0;
 
-    cbi(&data, 0);
-    cbi(&data, 1);
+    cbi(data, 0);
+    cbi(data, 1);
 
     if (fontSize == SMALL) {
-        cbi(&data, 2);
+        cbi(data, 2);
     } else if (fontSize == LARGE) {
-        sbi(&data, 2);
+        sbi(data, 2);
     }
 
     if (lineCount == ONE) {
-        cbi(&data, 3);
+        cbi(data, 3);
     } else if (lineCount == TWO) {
-        sbi(&data, 3);
+        sbi(data, 3);
 
     }
 
     if (bits == FOUR) {
-        cbi(&data, 4);
+        cbi(data, 4);
     } else if (bits == EIGHT) {
-        sbi(&data, 4);
+        sbi(data, 4);
     }
 
-    sbi(&data, 5);
-    cbi(&data, 6);
-    cbi(&data, 7);
+    sbi(data, 5);
+    cbi(data, 6);
+    cbi(data, 7);
 
     send(data);
 }
@@ -378,23 +373,23 @@ void lcdEntryModeSet(Boolean shiftScreen, AddressShiftDirection addressShiftDire
     uint8_t data = 0;
 
     if (shiftScreen == FALSE) {
-        cbi(&data, 0);
+        cbi(data, 0);
     } else if (shiftScreen == TRUE) {
-        sbi(&data, 0);
+        sbi(data, 0);
     }
 
     if (addressShiftDirection == DECREMENT) {
-        cbi(&data, 1);
+        cbi(data, 1);
     } else if (addressShiftDirection == INCREMENT) {
-        sbi(&data, 1);
+        sbi(data, 1);
     }
 
-    sbi(&data, 2);
-    cbi(&data, 3);
-    cbi(&data, 4);
-    cbi(&data, 5);
-    cbi(&data, 6);
-    cbi(&data, 7);
+    sbi(data, 2);
+    cbi(data, 3);
+    cbi(data, 4);
+    cbi(data, 5);
+    cbi(data, 6);
+    cbi(data, 7);
 
     send(data);
 }
@@ -407,28 +402,28 @@ void lcdDisplayOnOffControl(Boolean cursorBlinking, Boolean showCursor, Boolean 
     uint8_t data = 0;
 
     if (cursorBlinking == TRUE) {
-        sbi(&data, 0);
+        sbi(data, 0);
     } else if (cursorBlinking == FALSE) {
-        cbi(&data, 0);
+        cbi(data, 0);
     }
 
     if (showCursor == TRUE) {
-        sbi(&data, 1);
+        sbi(data, 1);
     } else if (showCursor == FALSE) {
-        cbi(&data, 1);
+        cbi(data, 1);
     }
 
     if (displayOn == TRUE) {
-        sbi(&data, 2);
+        sbi(data, 2);
     } else if (displayOn == FALSE) {
-        cbi(&data, 2);
+        cbi(data, 2);
     }
 
-    sbi(&data, 3);
-    cbi(&data, 4);
-    cbi(&data, 5);
-    cbi(&data, 6);
-    cbi(&data, 7);
+    sbi(data, 3);
+    cbi(data, 4);
+    cbi(data, 5);
+    cbi(data, 6);
+    cbi(data, 7);
 
     send(data);
 }
@@ -440,26 +435,26 @@ void lcdCursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode)
 
     uint8_t data = 0;
 
-    cbi(&data, 0);
-    cbi(&data, 1);
+    cbi(data, 0);
+    cbi(data, 1);
 
     if (shiftDirection == LEFT) {
-        cbi(&data, 2);
+        cbi(data, 2);
     } else if (shiftDirection == RIGHT) {
-        sbi(&data, 2);
+        sbi(data, 2);
     }
 
     if (shiftMode == CURSOR) {
         clearDataBit(_portD3);
-        cbi(&data, 3);
+        cbi(data, 3);
     } else if (shiftMode == DISPLAY) {
-        sbi(&data, 3);
+        sbi(data, 3);
     }
 
-    sbi(&data, 4);
-    cbi(&data, 5);
-    cbi(&data, 6);
-    cbi(&data, 7);
+    sbi(data, 4);
+    cbi(data, 5);
+    cbi(data, 6);
+    cbi(data, 7);
 
     send(data);
 }
@@ -469,7 +464,7 @@ void lcdSetDdramAddress(uint8_t address) {
     setCommandMode();
     setWriteMode();
 
-    sbi(&address, 7);
+    sbi(address, 7);
     send(address);
 }
 
@@ -478,8 +473,8 @@ void lcdSetCgramAddress(uint8_t address) {
     setCommandMode();
     setWriteMode();
 
-    sbi(&address, 6);
-    cbi(&address, 7);
+    sbi(address, 6);
+    cbi(address, 7);
 
     send(address);
 }
