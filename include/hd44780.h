@@ -11,7 +11,7 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef int Boolean;
+typedef uint8_t Boolean;
 
 typedef struct LcdPort {
     volatile uint8_t * avrPort;
