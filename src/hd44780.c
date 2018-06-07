@@ -355,6 +355,7 @@ void lcdClearScreen() {
     setWriteMode();
 
     send(0b00000001);
+    lcdReturnHome();
 }
 
 void lcdReturnHome() {
