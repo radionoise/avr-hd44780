@@ -105,6 +105,7 @@ uint8_t hd44780ReadBits(uint8_t startBit, uint8_t endBit) {
 }
 
 void hd44780Trigger() {
+    hd44780SetDdrBit(_portE);
     hd44780SetBit(_portE);
     _delay_ms(1);
     hd44780ClearBit(_portE);
