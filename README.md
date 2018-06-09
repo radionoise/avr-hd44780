@@ -26,10 +26,10 @@ LcdDataPort portD5 = {&DDRB, &PORTB, &PINB, PIN5};
 LcdDataPort portD6 = {&DDRB, &PORTB, &PINB, PIN6};
 LcdDataPort portD7 = {&DDRB, &PORTB, &PINB, PIN7};
 
-lcdInit8Bit(&portRs, &portRw, &portE, &portD0, &portD1, &portD2, &portD3, &portD4, &portD5, &portD6, &portD7);
-lcdFunctionSet(SMALL, TWO);
-lcdEntryModeSet(FALSE, INCREMENT);
-lcdClearScreen();
-lcdDisplayOnOffControl(FALSE, FALSE, TRUE);
-lcdSendString("Hello world!");
+hd44780Init8Bit(&portRs, &portRw, &portE, &portD0, &portD1, &portD2, &portD3, &portD4, &portD5, &portD6, &portD7);
+hd44780FunctionSet(SMALL, TWO);
+hd44780EntryModeSet(FALSE, INCREMENT);
+hd44780ClearScreen();
+hd44780DisplayOnOffControl(FALSE, FALSE, TRUE);
+hd44780SendString("Hello world!");
 ```

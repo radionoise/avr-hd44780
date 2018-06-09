@@ -19,31 +19,31 @@ LcdDataPort *_portD7;
 
 Bits bits;
 
-void setBit(LcdPort *lcdPort) {
+void hd44780SetBit(LcdPort *lcdPort) {
     sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void clearBit(LcdPort *lcdPort) {
+void hd44780ClearBit(LcdPort *lcdPort) {
     cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void setDataBit(LcdDataPort *lcdPort) {
+void hd44780SetDataBit(LcdDataPort *lcdPort) {
     sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void clearDataBit(LcdDataPort *lcdPort) {
+void hd44780ClearDataBit(LcdDataPort *lcdPort) {
     cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void setDdrBit(LcdDataPort *lcdPort) {
+void hd44780SetDdrBit(LcdDataPort *lcdPort) {
     sbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
-void clearDdrBit(LcdDataPort *lcdPort) {
+void hd44780ClearDdrBit(LcdDataPort *lcdPort) {
     cbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
-void writeBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
+void hd44780WriteBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
     for (int bit = startBit; bit <= endBit; bit++) {
         LcdDataPort *port;
 
@@ -67,14 +67,14 @@ void writeBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
         }
 
         if (((data >> bit) & 1) == 1) {
-            setDataBit(port);
+            hd44780SetDataBit(port);
         } else {
-            clearDataBit(port);
+            hd44780ClearDataBit(port);
         }
     }
 }
 
-uint8_t readBits(uint8_t startBit, uint8_t endBit) {
+uint8_t hd44780ReadBits(uint8_t startBit, uint8_t endBit) {
     uint8_t data = 0;
 
     for (int bit = startBit; bit <= endBit; bit++) {
@@ -112,120 +112,120 @@ uint8_t readBits(uint8_t startBit, uint8_t endBit) {
     return data;
 }
 
-void trigger() {
-    setBit(_portE);
+void hd44780Trigger() {
+    hd44780SetBit(_portE);
     _delay_ms(1);
-    clearBit(_portE);
+    hd44780ClearBit(_portE);
 }
 
-uint8_t triggerRead(uint8_t startBit, uint8_t endBit) {
-    setBit(_portE);
+uint8_t hd44780TriggerRead(uint8_t startBit, uint8_t endBit) {
+    hd44780SetBit(_portE);
     _delay_ms(1);
-    uint8_t result = readBits(startBit, endBit);
-    clearBit(_portE);
+    uint8_t result = hd44780ReadBits(startBit, endBit);
+    hd44780ClearBit(_portE);
 
     return result;
 }
 
-void send(uint8_t data) {
+void hd44780Send(uint8_t data) {
     if (bits == EIGHT) {
-        writeBits(data, 0, 7);
-        trigger();
+        hd44780WriteBits(data, 0, 7);
+        hd44780Trigger();
     } else if (bits == FOUR) {
-        writeBits(data, 4, 7);
-        trigger();
+        hd44780WriteBits(data, 4, 7);
+        hd44780Trigger();
         data <<= 4;
-        writeBits(data, 4, 7);
-        trigger();
+        hd44780WriteBits(data, 4, 7);
+        hd44780Trigger();
     }
 }
 
-uint8_t readData() {
+uint8_t hd44780ReadBitData() {
     if (bits == EIGHT) {
-        return triggerRead(0, 7);
+        return hd44780TriggerRead(0, 7);
     } else if (bits == FOUR) {
-        uint8_t highOrder = triggerRead(4, 7);
-        uint8_t lowOrder = triggerRead(4, 7) >> 4;
+        uint8_t highOrder = hd44780TriggerRead(4, 7);
+        uint8_t lowOrder = hd44780TriggerRead(4, 7) >> 4;
 
         return highOrder | lowOrder;
     }
 }
 
-void setWriteMode() {
+void hd44780SetWriteMode() {
     if (bits == EIGHT) {
-        setDdrBit(_portD0);
-        setDdrBit(_portD1);
-        setDdrBit(_portD2);
-        setDdrBit(_portD3);
+        hd44780SetDdrBit(_portD0);
+        hd44780SetDdrBit(_portD1);
+        hd44780SetDdrBit(_portD2);
+        hd44780SetDdrBit(_portD3);
 
-        clearDataBit(_portD0);
-        clearDataBit(_portD1);
-        clearDataBit(_portD2);
-        clearDataBit(_portD3);
+        hd44780ClearDataBit(_portD0);
+        hd44780ClearDataBit(_portD1);
+        hd44780ClearDataBit(_portD2);
+        hd44780ClearDataBit(_portD3);
     }
 
-    setDdrBit(_portD4);
-    setDdrBit(_portD5);
-    setDdrBit(_portD6);
-    setDdrBit(_portD7);
+    hd44780SetDdrBit(_portD4);
+    hd44780SetDdrBit(_portD5);
+    hd44780SetDdrBit(_portD6);
+    hd44780SetDdrBit(_portD7);
 
-    clearDataBit(_portD4);
-    clearDataBit(_portD5);
-    clearDataBit(_portD6);
-    clearDataBit(_portD7);
+    hd44780ClearDataBit(_portD4);
+    hd44780ClearDataBit(_portD5);
+    hd44780ClearDataBit(_portD6);
+    hd44780ClearDataBit(_portD7);
 
-    clearBit(_portRw);
+    hd44780ClearBit(_portRw);
 }
 
-void setReadMode() {
+void hd44780SetReadMode() {
     if (bits == EIGHT) {
-        clearDdrBit(_portD0);
-        clearDdrBit(_portD1);
-        clearDdrBit(_portD2);
-        clearDdrBit(_portD3);
+        hd44780ClearDdrBit(_portD0);
+        hd44780ClearDdrBit(_portD1);
+        hd44780ClearDdrBit(_portD2);
+        hd44780ClearDdrBit(_portD3);
 
-        setDataBit(_portD0);
-        setDataBit(_portD1);
-        setDataBit(_portD2);
-        setDataBit(_portD3);
+        hd44780SetDataBit(_portD0);
+        hd44780SetDataBit(_portD1);
+        hd44780SetDataBit(_portD2);
+        hd44780SetDataBit(_portD3);
     }
 
-    clearDdrBit(_portD4);
-    clearDdrBit(_portD5);
-    clearDdrBit(_portD6);
-    clearDdrBit(_portD7);
+    hd44780ClearDdrBit(_portD4);
+    hd44780ClearDdrBit(_portD5);
+    hd44780ClearDdrBit(_portD6);
+    hd44780ClearDdrBit(_portD7);
 
-    setDataBit(_portD4);
-    setDataBit(_portD5);
-    setDataBit(_portD6);
-    setDataBit(_portD7);
+    hd44780SetDataBit(_portD4);
+    hd44780SetDataBit(_portD5);
+    hd44780SetDataBit(_portD6);
+    hd44780SetDataBit(_portD7);
 
-    setBit(_portRw);
+    hd44780SetBit(_portRw);
 }
 
-void setCommandMode() {
-    clearBit(_portRs);
+void hd44780SetCommandMode() {
+    hd44780ClearBit(_portRs);
 }
 
-void setDataMode() {
-    setBit(_portRs);
+void hd44780SetDataMode() {
+    hd44780SetBit(_portRs);
 }
 
-uint8_t lcdReadBusyFlagAndAddress() {
-    setCommandMode();
-    setReadMode();
+uint8_t hd44780ReadBusyFlagAndAddress() {
+    hd44780SetCommandMode();
+    hd44780SetReadMode();
 
-    return readData();
+    return hd44780ReadBitData();
 }
 
-uint8_t lcdReadData() {
-    setDataMode();
-    setReadMode();
+uint8_t hd44780ReadData() {
+    hd44780SetDataMode();
+    hd44780SetReadMode();
 
-    return readData();
+    return hd44780ReadBitData();
 }
 
-void lcdInit8Bit(
+void hd44780Init8Bit(
         LcdPort *portRs,
         LcdPort *portRw,
         LcdPort *portE,
@@ -252,19 +252,19 @@ void lcdInit8Bit(
     bits = EIGHT;
 
     _delay_ms(40);
-    setWriteMode();
-    setCommandMode();
+    hd44780SetWriteMode();
+    hd44780SetCommandMode();
 
-    writeBits(0b00110000, 0, 7);
+    hd44780WriteBits(0b00110000, 0, 7);
 
-    trigger();
+    hd44780Trigger();
     _delay_ms(5);
-    trigger();
+    hd44780Trigger();
     _delay_ms(5);
-    trigger();
+    hd44780Trigger();
 }
 
-void lcdInit4Bit(
+void hd44780Init4Bit(
         LcdPort *portRs,
         LcdPort *portRw,
         LcdPort *portE,
@@ -283,27 +283,27 @@ void lcdInit4Bit(
     bits = FOUR;
 
     _delay_ms(40);
-    setWriteMode();
-    setCommandMode();
+    hd44780SetWriteMode();
+    hd44780SetCommandMode();
 
-    writeBits(0b00110000, 4, 7);
+    hd44780WriteBits(0b00110000, 4, 7);
 
-    trigger();
+    hd44780Trigger();
     _delay_ms(5);
-    trigger();
+    hd44780Trigger();
     _delay_ms(5);
-    trigger();
+    hd44780Trigger();
     _delay_ms(5);
-    writeBits(0b00100000, 4, 7);
-    trigger();
+    hd44780WriteBits(0b00100000, 4, 7);
+    hd44780Trigger();
 }
 
-void checkBusyFlag() {
-    setCommandMode();
-    setReadMode();
+void hd44780CheckBusyFlag() {
+    hd44780SetCommandMode();
+    hd44780SetReadMode();
 
     while (true) {
-        uint8_t data = readData();
+        uint8_t data = hd44780ReadBitData();
         int mask = 1 << 7;
         int result = data & mask;
 
@@ -313,10 +313,10 @@ void checkBusyFlag() {
     }
 }
 
-void lcdFunctionSet(FontSize fontSize, LineCount lineCount) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780FunctionSet(FontSize fontSize, LineCount lineCount) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     uint8_t data = 0;
 
@@ -346,30 +346,30 @@ void lcdFunctionSet(FontSize fontSize, LineCount lineCount) {
     cbi(data, 6);
     cbi(data, 7);
 
-    send(data);
+    hd44780Send(data);
 }
 
-void lcdClearScreen() {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780ClearScreen() {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
-    send(0b00000001);
-    lcdSetDdramAddress(0);
+    hd44780Send(0b00000001);
+    hd44780SetDdramAddress(0);
 }
 
-void lcdReturnHome() {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780ReturnHome() {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
-    send(0b00000010);
+    hd44780Send(0b00000010);
 }
 
-void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780EntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     uint8_t data = 0;
 
@@ -392,13 +392,13 @@ void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirecti
     cbi(data, 6);
     cbi(data, 7);
 
-    send(data);
+    hd44780Send(data);
 }
 
-void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     uint8_t data = 0;
 
@@ -426,13 +426,13 @@ void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn
     cbi(data, 6);
     cbi(data, 7);
 
-    send(data);
+    hd44780Send(data);
 }
 
-void lcdCursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780CursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     uint8_t data = 0;
 
@@ -446,7 +446,7 @@ void lcdCursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode)
     }
 
     if (shiftMode == CURSOR) {
-        clearDataBit(_portD3);
+        hd44780ClearDataBit(_portD3);
         cbi(data, 3);
     } else if (shiftMode == DISPLAY) {
         sbi(data, 3);
@@ -457,39 +457,39 @@ void lcdCursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode)
     cbi(data, 6);
     cbi(data, 7);
 
-    send(data);
+    hd44780Send(data);
 }
 
-void lcdSetDdramAddress(uint8_t address) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780SetDdramAddress(uint8_t address) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     sbi(address, 7);
-    send(address);
+    hd44780Send(address);
 }
 
-void lcdSetCgramAddress(uint8_t address) {
-    checkBusyFlag();
-    setCommandMode();
-    setWriteMode();
+void hd44780SetCgramAddress(uint8_t address) {
+    hd44780CheckBusyFlag();
+    hd44780SetCommandMode();
+    hd44780SetWriteMode();
 
     sbi(address, 6);
     cbi(address, 7);
 
-    send(address);
+    hd44780Send(address);
 }
 
-void lcdSendData(uint8_t data) {
-    setDataMode();
-    setWriteMode();
+void hd44780SendData(uint8_t data) {
+    hd44780SetDataMode();
+    hd44780SetWriteMode();
 
-    send(data);
+    hd44780Send(data);
 }
 
-void lcdSendString(char *string) {
+void hd44780SendString(char *string) {
     while (*string != '\0') {
-        lcdSendData((uint8_t) *string);
+        hd44780SendData((uint8_t) *string);
         string++;
     }
 }

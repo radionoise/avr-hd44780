@@ -54,7 +54,7 @@ typedef enum ShiftMode {
 /*
  * Performs init sequence for LCD to operate in 8-bit mode
  */
-void lcdInit8Bit(
+void hd44780Init8Bit(
         LcdPort *portRs,
         LcdPort *portRw,
         LcdPort *portE,
@@ -71,7 +71,7 @@ void lcdInit8Bit(
 /*
  * Performs init sequence for LCD to operate in 4-bit mode
  */
-void lcdInit4Bit(
+void hd44780Init4Bit(
         LcdPort *portRs,
         LcdPort *portRw,
         LcdPort *portE,
@@ -87,7 +87,7 @@ void lcdInit4Bit(
  * - fontSize - Sets the character font
  * - lineCount - Sets the number of display lines
  */
-void lcdFunctionSet(FontSize fontSize, LineCount lineCount);
+void hd44780FunctionSet(FontSize fontSize, LineCount lineCount);
 
 /*
  * Writes space code 20H (character pattern for character code 20H must be a blank pattern)
@@ -97,13 +97,13 @@ void lcdFunctionSet(FontSize fontSize, LineCount lineCount);
  * (in the first line if 2 lines are displayed).
  * It also sets AddressShiftDirection to INCREMENT in entry mode. bool shiftScreen of entry mode does not change.
  */
-void lcdClearScreen();
+void hd44780ClearScreen();
 
 /*
  * Sets DDRAM address 0 into the address counter, and returns the display to its original status
  * if it was shifted. The DDRAM contents do not change.
  */
-void lcdReturnHome();
+void hd44780ReturnHome();
 
 /*
  * Sets entry mode:
@@ -118,7 +118,7 @@ void lcdReturnHome();
  * The display does not shift when reading from DDRAM.
  * Also, writing into or reading out from CGRAM does not shift the display.
  */
-void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection);
+void hd44780EntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection);
 
 /*
  * Controls display:
@@ -136,7 +136,7 @@ void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirecti
  * - displayOn - The display is on when set to true and off when set to false.
  * When off, the display data remains in DDRAM, but can be displayed instantly by setting displayOn to true.
  */
-void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn);
+void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn);
 
 /*
  * Shifts the cursor position or display to the right or left without writing or reading display data.
@@ -147,29 +147,29 @@ void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn
  * The second line display does not shift into the first line position.
  * The address counter contents will not change if the only action performed is a display shift.
  */
-void lcdCursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode);
+void hd44780CursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode);
 
 /*
  * Sets the DDRAM address into the address counter. Data is then written to or read from the MPU for DDRAM.
  * For 1-line display, address can be 0x0 to 0x4f.
  * For 2-line display, address can be 0x0 to 0x27 for the first line, and 0x40 to 0x67.
  */
-void lcdSetDdramAddress(uint8_t address);
+void hd44780SetDdramAddress(uint8_t address);
 
 /*
  * Sets the CGRAM address into the address counter. Data is then written to or read from the MPU for CGRAM.
  */
-void lcdSetCgramAddress(uint8_t address);
+void hd44780SetCgramAddress(uint8_t address);
 
 /*
  * Writes data into DDRAM or CGRAM. The data can be a character or raw bytes.
  */
-void lcdSendData(uint8_t data);
+void hd44780SendData(uint8_t data);
 
 /*
  * Writes array of characters.
  */
-void lcdSendString(char * string);
+void hd44780SendString(char *string);
 
 /*
  * Reads the busy flag (7th bit) indicating that the system is now internally operating
@@ -182,11 +182,11 @@ void lcdSendString(char * string);
  * This address counter is used by both CG and DDRAM addresses, and its value is determined by the previous instruction.
  * The address contents are the same as for instructions set CGRAM address and set DDRAM address.
  */
-uint8_t lcdReadBusyFlagAndAddress();
+uint8_t hd44780ReadBusyFlagAndAddress();
 
 /*
  * Reads data from DDRAM or CGRAM.
  */
-uint8_t lcdReadData();
+uint8_t hd44780ReadData();
 
 #endif //AVR_HD44780_HD44780_H
