@@ -4,48 +4,48 @@
 #define sbi(port,bit) (port) |= (1 << (bit))
 #define cbi(port,bit) (port) &= ~(1 << (bit))
 
-LcdPort *_portRs;
-LcdPort *_portRw;
-LcdPort *_portE;
+Hd44780Port *_portRs;
+Hd44780Port *_portRw;
+Hd44780Port *_portE;
 
-LcdDataPort *_portD0;
-LcdDataPort *_portD1;
-LcdDataPort *_portD2;
-LcdDataPort *_portD3;
-LcdDataPort *_portD4;
-LcdDataPort *_portD5;
-LcdDataPort *_portD6;
-LcdDataPort *_portD7;
+Hd44780DataPort *_portD0;
+Hd44780DataPort *_portD1;
+Hd44780DataPort *_portD2;
+Hd44780DataPort *_portD3;
+Hd44780DataPort *_portD4;
+Hd44780DataPort *_portD5;
+Hd44780DataPort *_portD6;
+Hd44780DataPort *_portD7;
 
-Bits bits;
+Hd44780Bits bits;
 
-void hd44780SetBit(LcdPort *lcdPort) {
+void hd44780SetBit(Hd44780Port *lcdPort) {
     sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void hd44780ClearBit(LcdPort *lcdPort) {
+void hd44780ClearBit(Hd44780Port *lcdPort) {
     cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void hd44780SetDataBit(LcdDataPort *lcdPort) {
+void hd44780SetDataBit(Hd44780DataPort *lcdPort) {
     sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void hd44780ClearDataBit(LcdDataPort *lcdPort) {
+void hd44780ClearDataBit(Hd44780DataPort *lcdPort) {
     cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void hd44780SetDdrBit(LcdDataPort *lcdPort) {
+void hd44780SetDdrBit(Hd44780DataPort *lcdPort) {
     sbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
-void hd44780ClearDdrBit(LcdDataPort *lcdPort) {
+void hd44780ClearDdrBit(Hd44780DataPort *lcdPort) {
     cbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
 void hd44780WriteBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
     for (int bit = startBit; bit <= endBit; bit++) {
-        LcdDataPort *port;
+        Hd44780DataPort *port;
 
         switch (bit) {
             case 0: port = _portD0;
@@ -78,7 +78,7 @@ uint8_t hd44780ReadBits(uint8_t startBit, uint8_t endBit) {
     uint8_t data = 0;
 
     for (int bit = startBit; bit <= endBit; bit++) {
-        LcdDataPort *port;
+        Hd44780DataPort *port;
 
         switch (bit) {
             case 0: port = _portD0;
@@ -226,17 +226,17 @@ uint8_t hd44780ReadData() {
 }
 
 void hd44780Init8Bit(
-        LcdPort *portRs,
-        LcdPort *portRw,
-        LcdPort *portE,
-        LcdDataPort *portD0,
-        LcdDataPort *portD1,
-        LcdDataPort *portD2,
-        LcdDataPort *portD3,
-        LcdDataPort *portD4,
-        LcdDataPort *portD5,
-        LcdDataPort *portD6,
-        LcdDataPort *portD7
+        Hd44780Port *portRs,
+        Hd44780Port *portRw,
+        Hd44780Port *portE,
+        Hd44780DataPort *portD0,
+        Hd44780DataPort *portD1,
+        Hd44780DataPort *portD2,
+        Hd44780DataPort *portD3,
+        Hd44780DataPort *portD4,
+        Hd44780DataPort *portD5,
+        Hd44780DataPort *portD6,
+        Hd44780DataPort *portD7
 ) {
     _portRs = portRs;
     _portRw = portRw;
@@ -265,13 +265,13 @@ void hd44780Init8Bit(
 }
 
 void hd44780Init4Bit(
-        LcdPort *portRs,
-        LcdPort *portRw,
-        LcdPort *portE,
-        LcdDataPort *portD4,
-        LcdDataPort *portD5,
-        LcdDataPort *portD6,
-        LcdDataPort *portD7
+        Hd44780Port *portRs,
+        Hd44780Port *portRw,
+        Hd44780Port *portE,
+        Hd44780DataPort *portD4,
+        Hd44780DataPort *portD5,
+        Hd44780DataPort *portD6,
+        Hd44780DataPort *portD7
 ) {
     _portRs = portRs;
     _portRw = portRw;
@@ -313,7 +313,7 @@ void hd44780CheckBusyFlag() {
     }
 }
 
-void hd44780FunctionSet(FontSize fontSize, LineCount lineCount) {
+void hd44780FunctionSet(Hd44780FontSize fontSize, Hd44780LineCount lineCount) {
     hd44780CheckBusyFlag();
     hd44780SetCommandMode();
     hd44780SetWriteMode();
@@ -366,7 +366,7 @@ void hd44780ReturnHome() {
     hd44780Send(0b00000010);
 }
 
-void hd44780EntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection) {
+void hd44780EntryModeSet(bool shiftScreen, Hd44780AddressShiftDirection addressShiftDirection) {
     hd44780CheckBusyFlag();
     hd44780SetCommandMode();
     hd44780SetWriteMode();
@@ -429,7 +429,7 @@ void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displ
     hd44780Send(data);
 }
 
-void hd44780CursorOrDisplayShift(ShiftDirection shiftDirection, ShiftMode shiftMode) {
+void hd44780CursorOrDisplayShift(Hd44780ShiftDirection shiftDirection, Hd44780ShiftMode shiftMode) {
     hd44780CheckBusyFlag();
     hd44780SetCommandMode();
     hd44780SetWriteMode();
