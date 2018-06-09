@@ -20,27 +20,27 @@ LcdDataPort *_portD7;
 Bits bits;
 
 void setBit(LcdPort *lcdPort) {
-    *lcdPort->avrPort |= (1 << lcdPort->avrPin);
+    sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
 void clearBit(LcdPort *lcdPort) {
-    *lcdPort->avrPort &= ~(1 << lcdPort->avrPin);
+    cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
 void setDataBit(LcdDataPort *lcdPort) {
-    *lcdPort->avrPort |= (1 << lcdPort->avrPin);
+    sbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
 void clearDataBit(LcdDataPort *lcdPort) {
-    *lcdPort->avrPort &= ~(1 << lcdPort->avrPin);
+    cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
 void setDdrBit(LcdDataPort *lcdPort) {
-    *lcdPort->avrDdrPort |= (1 << lcdPort->avrPin);
+    sbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
 void clearDdrBit(LcdDataPort *lcdPort) {
-    *lcdPort->avrDdrPort &= ~(1 << lcdPort->avrPin);
+    cbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
 void writeBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
