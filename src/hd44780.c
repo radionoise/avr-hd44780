@@ -302,7 +302,7 @@ void checkBusyFlag() {
     setCommandMode();
     setReadMode();
 
-    while (TRUE) {
+    while (true) {
         uint8_t data = readData();
         int mask = 1 << 7;
         int result = data & mask;
@@ -366,16 +366,16 @@ void lcdReturnHome() {
     send(0b00000010);
 }
 
-void lcdEntryModeSet(Boolean shiftScreen, AddressShiftDirection addressShiftDirection) {
+void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection) {
     checkBusyFlag();
     setCommandMode();
     setWriteMode();
 
     uint8_t data = 0;
 
-    if (shiftScreen == FALSE) {
+    if (shiftScreen == false) {
         cbi(data, 0);
-    } else if (shiftScreen == TRUE) {
+    } else if (shiftScreen == true) {
         sbi(data, 0);
     }
 
@@ -395,28 +395,28 @@ void lcdEntryModeSet(Boolean shiftScreen, AddressShiftDirection addressShiftDire
     send(data);
 }
 
-void lcdDisplayOnOffControl(Boolean cursorBlinking, Boolean showCursor, Boolean displayOn) {
+void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn) {
     checkBusyFlag();
     setCommandMode();
     setWriteMode();
 
     uint8_t data = 0;
 
-    if (cursorBlinking == TRUE) {
+    if (cursorBlinking == true) {
         sbi(data, 0);
-    } else if (cursorBlinking == FALSE) {
+    } else if (cursorBlinking == false) {
         cbi(data, 0);
     }
 
-    if (showCursor == TRUE) {
+    if (showCursor == true) {
         sbi(data, 1);
-    } else if (showCursor == FALSE) {
+    } else if (showCursor == false) {
         cbi(data, 1);
     }
 
-    if (displayOn == TRUE) {
+    if (displayOn == true) {
         sbi(data, 2);
-    } else if (displayOn == FALSE) {
+    } else if (displayOn == false) {
         cbi(data, 2);
     }
 

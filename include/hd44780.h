@@ -6,12 +6,8 @@
 #ifndef AVR_HD44780_HD44780_H
 #define AVR_HD44780_HD44780_H
 
+#include <stdbool.h>
 #include <avr/io.h>
-
-#define TRUE 1
-#define FALSE 0
-
-typedef uint8_t Boolean;
 
 typedef struct LcdPort {
     volatile uint8_t * avrPort;
@@ -99,7 +95,7 @@ void lcdFunctionSet(FontSize fontSize, LineCount lineCount);
  * and returns the display to its original status if it was shifted.
  * In other words, the display disappears and the cursor or blinking goes to the left edge of the display
  * (in the first line if 2 lines are displayed).
- * It also sets AddressShiftDirection to INCREMENT in entry mode. Boolean shiftScreen of entry mode does not change.
+ * It also sets AddressShiftDirection to INCREMENT in entry mode. bool shiftScreen of entry mode does not change.
  */
 void lcdClearScreen();
 
@@ -118,29 +114,29 @@ void lcdReturnHome();
  *
  * - shiftScreen - Shifts the entire display either to the right or to the left.
  * The display does not shift if shiftScreen is false.
- * If shiftScreen is TRUE, it will seem as if the cursor does not move but the display does.
+ * If shiftScreen is true, it will seem as if the cursor does not move but the display does.
  * The display does not shift when reading from DDRAM.
  * Also, writing into or reading out from CGRAM does not shift the display.
  */
-void lcdEntryModeSet(Boolean shiftScreen, AddressShiftDirection addressShiftDirection);
+void lcdEntryModeSet(bool shiftScreen, AddressShiftDirection addressShiftDirection);
 
 /*
  * Controls display:
  *
- * - cursorBlinking - The character indicated by the cursor blinks when cursorBlinking is TRUE.
+ * - cursorBlinking - The character indicated by the cursor blinks when cursorBlinking is true.
  * The blinking is displayed as switching between all blank dots and displayed characters.
  * The cursor and blinking can be set to display simultaneously.
  *
- * - showCursor - The cursor is displayed when showCursor is TRUE and not displayed when set to FALSE.
+ * - showCursor - The cursor is displayed when showCursor is true and not displayed when set to false.
  * Even if the cursor disappears, the function of INCREMENT/DECREMENT or other specifications
  * will not change during display data write.
  * The cursor is displayed using 5 dots in the 8th line for 5 × 8 dot character font selection
  * and in the 11th line for the 5 × 10 dot character font selection.
  *
- * - displayOn - The display is on when set to TRUE and off when set to FALSE.
- * When off, the display data remains in DDRAM, but can be displayed instantly by setting displayOn to TRUE.
+ * - displayOn - The display is on when set to true and off when set to false.
+ * When off, the display data remains in DDRAM, but can be displayed instantly by setting displayOn to true.
  */
-void lcdDisplayOnOffControl(Boolean cursorBlinking, Boolean showCursor, Boolean displayOn);
+void lcdDisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn);
 
 /*
  * Shifts the cursor position or display to the right or left without writing or reading display data.
