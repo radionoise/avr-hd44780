@@ -10,16 +10,11 @@
 #include <avr/io.h>
 
 typedef struct Hd44780Port {
-    volatile uint8_t * avrPort;
-    uint8_t avrPin;
-} Hd44780Port;
-
-typedef struct Hd44780DataPort {
     volatile uint8_t * avrDdrPort;
     volatile uint8_t * avrPort;
     volatile uint8_t * avrPinPort;
     uint8_t avrPin;
-} Hd44780DataPort;
+} Hd44780Port;
 
 typedef enum Hd44780FontSize {
     HD44780_SMALL,
@@ -58,14 +53,14 @@ void hd44780Init8Bit(
         Hd44780Port *portRs,
         Hd44780Port *portRw,
         Hd44780Port *portE,
-        Hd44780DataPort *portD0,
-        Hd44780DataPort *portD1,
-        Hd44780DataPort *portD2,
-        Hd44780DataPort *portD3,
-        Hd44780DataPort *portD4,
-        Hd44780DataPort *portD5,
-        Hd44780DataPort *portD6,
-        Hd44780DataPort *portD7
+        Hd44780Port *portD0,
+        Hd44780Port *portD1,
+        Hd44780Port *portD2,
+        Hd44780Port *portD3,
+        Hd44780Port *portD4,
+        Hd44780Port *portD5,
+        Hd44780Port *portD6,
+        Hd44780Port *portD7
 );
 
 /*
@@ -75,10 +70,10 @@ void hd44780Init4Bit(
         Hd44780Port *portRs,
         Hd44780Port *portRw,
         Hd44780Port *portE,
-        Hd44780DataPort *portD4,
-        Hd44780DataPort *portD5,
-        Hd44780DataPort *portD6,
-        Hd44780DataPort *portD7
+        Hd44780Port *portD4,
+        Hd44780Port *portD5,
+        Hd44780Port *portD6,
+        Hd44780Port *portD7
 );
 
 /*

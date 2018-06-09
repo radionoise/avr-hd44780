@@ -8,14 +8,14 @@ Hd44780Port *_portRs;
 Hd44780Port *_portRw;
 Hd44780Port *_portE;
 
-Hd44780DataPort *_portD0;
-Hd44780DataPort *_portD1;
-Hd44780DataPort *_portD2;
-Hd44780DataPort *_portD3;
-Hd44780DataPort *_portD4;
-Hd44780DataPort *_portD5;
-Hd44780DataPort *_portD6;
-Hd44780DataPort *_portD7;
+Hd44780Port *_portD0;
+Hd44780Port *_portD1;
+Hd44780Port *_portD2;
+Hd44780Port *_portD3;
+Hd44780Port *_portD4;
+Hd44780Port *_portD5;
+Hd44780Port *_portD6;
+Hd44780Port *_portD7;
 
 Hd44780Bits bits;
 
@@ -27,25 +27,17 @@ void hd44780ClearBit(Hd44780Port *lcdPort) {
     cbi(*lcdPort->avrPort, lcdPort->avrPin);
 }
 
-void hd44780SetDataBit(Hd44780DataPort *lcdPort) {
-    sbi(*lcdPort->avrPort, lcdPort->avrPin);
-}
-
-void hd44780ClearDataBit(Hd44780DataPort *lcdPort) {
-    cbi(*lcdPort->avrPort, lcdPort->avrPin);
-}
-
-void hd44780SetDdrBit(Hd44780DataPort *lcdPort) {
+void hd44780SetDdrBit(Hd44780Port *lcdPort) {
     sbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
-void hd44780ClearDdrBit(Hd44780DataPort *lcdPort) {
+void hd44780ClearDdrBit(Hd44780Port *lcdPort) {
     cbi(*lcdPort->avrDdrPort, lcdPort->avrPin);
 }
 
 void hd44780WriteBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
     for (int bit = startBit; bit <= endBit; bit++) {
-        Hd44780DataPort *port;
+        Hd44780Port *port;
 
         switch (bit) {
             case 0: port = _portD0;
@@ -67,9 +59,9 @@ void hd44780WriteBits(uint8_t data, uint8_t startBit, uint8_t endBit) {
         }
 
         if (((data >> bit) & 1) == 1) {
-            hd44780SetDataBit(port);
+            hd44780SetBit(port);
         } else {
-            hd44780ClearDataBit(port);
+            hd44780ClearBit(port);
         }
     }
 }
@@ -78,7 +70,7 @@ uint8_t hd44780ReadBits(uint8_t startBit, uint8_t endBit) {
     uint8_t data = 0;
 
     for (int bit = startBit; bit <= endBit; bit++) {
-        Hd44780DataPort *port;
+        Hd44780Port *port;
 
         switch (bit) {
             case 0: port = _portD0;
@@ -158,10 +150,10 @@ void hd44780SetWriteMode() {
         hd44780SetDdrBit(_portD2);
         hd44780SetDdrBit(_portD3);
 
-        hd44780ClearDataBit(_portD0);
-        hd44780ClearDataBit(_portD1);
-        hd44780ClearDataBit(_portD2);
-        hd44780ClearDataBit(_portD3);
+        hd44780ClearBit(_portD0);
+        hd44780ClearBit(_portD1);
+        hd44780ClearBit(_portD2);
+        hd44780ClearBit(_portD3);
     }
 
     hd44780SetDdrBit(_portD4);
@@ -169,11 +161,12 @@ void hd44780SetWriteMode() {
     hd44780SetDdrBit(_portD6);
     hd44780SetDdrBit(_portD7);
 
-    hd44780ClearDataBit(_portD4);
-    hd44780ClearDataBit(_portD5);
-    hd44780ClearDataBit(_portD6);
-    hd44780ClearDataBit(_portD7);
+    hd44780ClearBit(_portD4);
+    hd44780ClearBit(_portD5);
+    hd44780ClearBit(_portD6);
+    hd44780ClearBit(_portD7);
 
+    hd44780SetDdrBit(_portRw);
     hd44780ClearBit(_portRw);
 }
 
@@ -184,10 +177,10 @@ void hd44780SetReadMode() {
         hd44780ClearDdrBit(_portD2);
         hd44780ClearDdrBit(_portD3);
 
-        hd44780SetDataBit(_portD0);
-        hd44780SetDataBit(_portD1);
-        hd44780SetDataBit(_portD2);
-        hd44780SetDataBit(_portD3);
+        hd44780SetBit(_portD0);
+        hd44780SetBit(_portD1);
+        hd44780SetBit(_portD2);
+        hd44780SetBit(_portD3);
     }
 
     hd44780ClearDdrBit(_portD4);
@@ -195,19 +188,22 @@ void hd44780SetReadMode() {
     hd44780ClearDdrBit(_portD6);
     hd44780ClearDdrBit(_portD7);
 
-    hd44780SetDataBit(_portD4);
-    hd44780SetDataBit(_portD5);
-    hd44780SetDataBit(_portD6);
-    hd44780SetDataBit(_portD7);
+    hd44780SetBit(_portD4);
+    hd44780SetBit(_portD5);
+    hd44780SetBit(_portD6);
+    hd44780SetBit(_portD7);
 
+    hd44780SetDdrBit(_portRw);
     hd44780SetBit(_portRw);
 }
 
 void hd44780SetCommandMode() {
+    hd44780SetDdrBit(_portRs);
     hd44780ClearBit(_portRs);
 }
 
 void hd44780SetDataMode() {
+    hd44780SetDdrBit(_portRw);
     hd44780SetBit(_portRs);
 }
 
@@ -229,14 +225,14 @@ void hd44780Init8Bit(
         Hd44780Port *portRs,
         Hd44780Port *portRw,
         Hd44780Port *portE,
-        Hd44780DataPort *portD0,
-        Hd44780DataPort *portD1,
-        Hd44780DataPort *portD2,
-        Hd44780DataPort *portD3,
-        Hd44780DataPort *portD4,
-        Hd44780DataPort *portD5,
-        Hd44780DataPort *portD6,
-        Hd44780DataPort *portD7
+        Hd44780Port *portD0,
+        Hd44780Port *portD1,
+        Hd44780Port *portD2,
+        Hd44780Port *portD3,
+        Hd44780Port *portD4,
+        Hd44780Port *portD5,
+        Hd44780Port *portD6,
+        Hd44780Port *portD7
 ) {
     _portRs = portRs;
     _portRw = portRw;
@@ -268,10 +264,10 @@ void hd44780Init4Bit(
         Hd44780Port *portRs,
         Hd44780Port *portRw,
         Hd44780Port *portE,
-        Hd44780DataPort *portD4,
-        Hd44780DataPort *portD5,
-        Hd44780DataPort *portD6,
-        Hd44780DataPort *portD7
+        Hd44780Port *portD4,
+        Hd44780Port *portD5,
+        Hd44780Port *portD6,
+        Hd44780Port *portD7
 ) {
     _portRs = portRs;
     _portRw = portRw;
@@ -446,7 +442,7 @@ void hd44780CursorOrDisplayShift(Hd44780ShiftDirection shiftDirection, Hd44780Sh
     }
 
     if (shiftMode == HD44780_CURSOR) {
-        hd44780ClearDataBit(_portD3);
+        hd44780ClearBit(_portD3);
         cbi(data, 3);
     } else if (shiftMode == HD44780_DISPLAY) {
         sbi(data, 3);
