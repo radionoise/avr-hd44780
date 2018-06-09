@@ -22,33 +22,33 @@ typedef struct Hd44780DataPort {
 } Hd44780DataPort;
 
 typedef enum Hd44780FontSize {
-    SMALL,
-    LARGE
+    HD44780_SMALL,
+    HD44780_LARGE
 } Hd44780FontSize;
 
 typedef enum Hd44780LineCount {
-    ONE,
-    TWO
+    HD44780_ONE,
+    HD44780_TWO
 } Hd44780LineCount;
 
 typedef enum Hd44780Bits {
-    EIGHT,
-    FOUR
+    HD44780_EIGHT,
+    HD44780_FOUR
 } Hd44780Bits;
 
 typedef enum Hd44780AddressShiftDirection {
-    DECREMENT,
-    INCREMENT
+    HD44780_DECREMENT,
+    HD44780_INCREMENT
 } Hd44780AddressShiftDirection;
 
 typedef enum ShiftDirection {
-    LEFT,
-    RIGHT
+    HD44780_LEFT,
+    HD44780_RIGHT
 } Hd44780ShiftDirection;
 
 typedef enum Hd44780ShiftMode {
-    CURSOR,
-    DISPLAY
+    HD44780_CURSOR,
+    HD44780_DISPLAY
 } Hd44780ShiftMode;
 
 /*

@@ -128,10 +128,10 @@ uint8_t hd44780TriggerRead(uint8_t startBit, uint8_t endBit) {
 }
 
 void hd44780Send(uint8_t data) {
-    if (bits == EIGHT) {
+    if (bits == HD44780_EIGHT) {
         hd44780WriteBits(data, 0, 7);
         hd44780Trigger();
-    } else if (bits == FOUR) {
+    } else if (bits == HD44780_FOUR) {
         hd44780WriteBits(data, 4, 7);
         hd44780Trigger();
         data <<= 4;
@@ -141,9 +141,9 @@ void hd44780Send(uint8_t data) {
 }
 
 uint8_t hd44780ReadBitData() {
-    if (bits == EIGHT) {
+    if (bits == HD44780_EIGHT) {
         return hd44780TriggerRead(0, 7);
-    } else if (bits == FOUR) {
+    } else if (bits == HD44780_FOUR) {
         uint8_t highOrder = hd44780TriggerRead(4, 7);
         uint8_t lowOrder = hd44780TriggerRead(4, 7) >> 4;
 
@@ -152,7 +152,7 @@ uint8_t hd44780ReadBitData() {
 }
 
 void hd44780SetWriteMode() {
-    if (bits == EIGHT) {
+    if (bits == HD44780_EIGHT) {
         hd44780SetDdrBit(_portD0);
         hd44780SetDdrBit(_portD1);
         hd44780SetDdrBit(_portD2);
@@ -178,7 +178,7 @@ void hd44780SetWriteMode() {
 }
 
 void hd44780SetReadMode() {
-    if (bits == EIGHT) {
+    if (bits == HD44780_EIGHT) {
         hd44780ClearDdrBit(_portD0);
         hd44780ClearDdrBit(_portD1);
         hd44780ClearDdrBit(_portD2);
@@ -249,7 +249,7 @@ void hd44780Init8Bit(
     _portD5 = portD5;
     _portD6 = portD6;
     _portD7 = portD7;
-    bits = EIGHT;
+    bits = HD44780_EIGHT;
 
     _delay_ms(40);
     hd44780SetWriteMode();
@@ -280,7 +280,7 @@ void hd44780Init4Bit(
     _portD5 = portD5;
     _portD6 = portD6;
     _portD7 = portD7;
-    bits = FOUR;
+    bits = HD44780_FOUR;
 
     _delay_ms(40);
     hd44780SetWriteMode();
@@ -323,22 +323,22 @@ void hd44780FunctionSet(Hd44780FontSize fontSize, Hd44780LineCount lineCount) {
     cbi(data, 0);
     cbi(data, 1);
 
-    if (fontSize == SMALL) {
+    if (fontSize == HD44780_SMALL) {
         cbi(data, 2);
-    } else if (fontSize == LARGE) {
+    } else if (fontSize == HD44780_LARGE) {
         sbi(data, 2);
     }
 
-    if (lineCount == ONE) {
+    if (lineCount == HD44780_ONE) {
         cbi(data, 3);
-    } else if (lineCount == TWO) {
+    } else if (lineCount == HD44780_TWO) {
         sbi(data, 3);
 
     }
 
-    if (bits == FOUR) {
+    if (bits == HD44780_FOUR) {
         cbi(data, 4);
-    } else if (bits == EIGHT) {
+    } else if (bits == HD44780_EIGHT) {
         sbi(data, 4);
     }
 
@@ -379,9 +379,9 @@ void hd44780EntryModeSet(bool shiftScreen, Hd44780AddressShiftDirection addressS
         sbi(data, 0);
     }
 
-    if (addressShiftDirection == DECREMENT) {
+    if (addressShiftDirection == HD44780_DECREMENT) {
         cbi(data, 1);
-    } else if (addressShiftDirection == INCREMENT) {
+    } else if (addressShiftDirection == HD44780_INCREMENT) {
         sbi(data, 1);
     }
 
@@ -439,16 +439,16 @@ void hd44780CursorOrDisplayShift(Hd44780ShiftDirection shiftDirection, Hd44780Sh
     cbi(data, 0);
     cbi(data, 1);
 
-    if (shiftDirection == LEFT) {
+    if (shiftDirection == HD44780_LEFT) {
         cbi(data, 2);
-    } else if (shiftDirection == RIGHT) {
+    } else if (shiftDirection == HD44780_RIGHT) {
         sbi(data, 2);
     }
 
-    if (shiftMode == CURSOR) {
+    if (shiftMode == HD44780_CURSOR) {
         hd44780ClearDataBit(_portD3);
         cbi(data, 3);
-    } else if (shiftMode == DISPLAY) {
+    } else if (shiftMode == HD44780_DISPLAY) {
         sbi(data, 3);
     }
 
