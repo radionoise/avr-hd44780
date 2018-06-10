@@ -8,28 +8,28 @@ You can use any port on your AVR microcontroller
 This example shows 8-bit operation mode.
 
 ```
-uint8_t allOut = 0b11111111;
-DDRA = allOut;
-DDRB = allOut;
-DDRC = allOut;
-DDRD = allOut;
+Hd44780Port portRs = {&DDRA, &PORTA, &PINA, PIN0};
+Hd44780Port portRw = {&DDRA, &PORTA, &PINA, PIN1};
+Hd44780Port portE = {&DDRA, &PORTA, &PINA, PIN2};
+Hd44780Port portD4 = {&DDRB, &PORTB, &PINB, PIN4};
+Hd44780Port portD5 = {&DDRB, &PORTB, &PINB, PIN5};
+Hd44780Port portD6 = {&DDRB, &PORTB, &PINB, PIN6};
+Hd44780Port portD7 = {&DDRB, &PORTB, &PINB, PIN7};
 
-LcdPort portRs = {&PORTA, PIN0};
-LcdPort portRw = {&PORTA, PIN1};
-LcdPort portE = {&PORTA, PIN2};
-LcdDataPort portD0 = {&DDRB, &PORTB, &PINB, PIN0};
-LcdDataPort portD1 = {&DDRB, &PORTB, &PINB, PIN1};
-LcdDataPort portD2 = {&DDRB, &PORTB, &PINB, PIN2};
-LcdDataPort portD3 = {&DDRB, &PORTB, &PINB, PIN3};
-LcdDataPort portD4 = {&DDRB, &PORTB, &PINB, PIN4};
-LcdDataPort portD5 = {&DDRB, &PORTB, &PINB, PIN5};
-LcdDataPort portD6 = {&DDRB, &PORTB, &PINB, PIN6};
-LcdDataPort portD7 = {&DDRB, &PORTB, &PINB, PIN7};
+Hd44780Ports hd44780Ports = {
+        .portRs = &portRs,
+        .portRw = &portRw,
+        .portE = &portE,
+        .portD4 = &portD4,
+        .portD5 = &portD5,
+        .portD6 = &portD6,
+        .portD7 = &portD7,
+};
 
-hd44780Init8Bit(&portRs, &portRw, &portE, &portD0, &portD1, &portD2, &portD3, &portD4, &portD5, &portD6, &portD7);
-hd44780FunctionSet(SMALL, TWO);
-hd44780EntryModeSet(FALSE, INCREMENT);
-hd44780ClearScreen();
-hd44780DisplayOnOffControl(FALSE, FALSE, TRUE);
-hd44780SendString("Hello world!");
+hd44780Init(&hd44780Ports);
+hd44780FunctionSet(HD44780_SMALL, HD44780_TWO, &hd44780Ports);
+hd44780EntryModeSet(false, HD44780_INCREMENT, &hd44780Ports);
+hd44780ClearScreen(&hd44780Ports);
+hd44780DisplayOnOffControl(FALSE, FALSE, TRUE, &hd44780Ports);
+hd44780SendString("Hello world!", &hd44780Ports);
 ```
