@@ -16,6 +16,20 @@ typedef struct Hd44780Port {
     uint8_t avrPin;
 } Hd44780Port;
 
+typedef struct Hd44780Ports {
+    Hd44780Port *portRs;
+    Hd44780Port *portRw;
+    Hd44780Port *portE;
+    Hd44780Port *portD0; // optional if using 4-bit mode
+    Hd44780Port *portD1; // optional if using 4-bit mode
+    Hd44780Port *portD2; // optional if using 4-bit mode
+    Hd44780Port *portD3; // optional if using 4-bit mode
+    Hd44780Port *portD4;
+    Hd44780Port *portD5;
+    Hd44780Port *portD6;
+    Hd44780Port *portD7;
+} Hd44780Ports;
+
 typedef enum Hd44780FontSize {
     HD44780_SMALL,
     HD44780_LARGE
@@ -25,11 +39,6 @@ typedef enum Hd44780LineCount {
     HD44780_ONE,
     HD44780_TWO
 } Hd44780LineCount;
-
-typedef enum Hd44780Bits {
-    HD44780_EIGHT,
-    HD44780_FOUR
-} Hd44780Bits;
 
 typedef enum Hd44780AddressShiftDirection {
     HD44780_DECREMENT,
@@ -47,34 +56,9 @@ typedef enum Hd44780ShiftMode {
 } Hd44780ShiftMode;
 
 /*
- * Performs init sequence for LCD to operate in 8-bit mode
+ * Performs init sequence for LCD
  */
-void hd44780Init8Bit(
-        Hd44780Port *portRs,
-        Hd44780Port *portRw,
-        Hd44780Port *portE,
-        Hd44780Port *portD0,
-        Hd44780Port *portD1,
-        Hd44780Port *portD2,
-        Hd44780Port *portD3,
-        Hd44780Port *portD4,
-        Hd44780Port *portD5,
-        Hd44780Port *portD6,
-        Hd44780Port *portD7
-);
-
-/*
- * Performs init sequence for LCD to operate in 4-bit mode
- */
-void hd44780Init4Bit(
-        Hd44780Port *portRs,
-        Hd44780Port *portRw,
-        Hd44780Port *portE,
-        Hd44780Port *portD4,
-        Hd44780Port *portD5,
-        Hd44780Port *portD6,
-        Hd44780Port *portD7
-);
+void hd44780Init(Hd44780Ports *ports);
 
 /*
  * Sets LCD parameters:
@@ -82,7 +66,7 @@ void hd44780Init4Bit(
  * - fontSize - Sets the character font
  * - lineCount - Sets the number of display lines
  */
-void hd44780FunctionSet(Hd44780FontSize fontSize, Hd44780LineCount lineCount);
+void hd44780FunctionSet(Hd44780FontSize fontSize, Hd44780LineCount lineCount, Hd44780Ports *ports);
 
 /*
  * Writes space code 20H (character pattern for character code 20H must be a blank pattern)
@@ -92,13 +76,13 @@ void hd44780FunctionSet(Hd44780FontSize fontSize, Hd44780LineCount lineCount);
  * (in the first line if 2 lines are displayed).
  * It also sets Hd44780AddressShiftDirection to INCREMENT in entry mode. bool shiftScreen of entry mode does not change.
  */
-void hd44780ClearScreen();
+void hd44780ClearScreen(Hd44780Ports *ports);
 
 /*
  * Sets DDRAM address 0 into the address counter, and returns the display to its original status
  * if it was shifted. The DDRAM contents do not change.
  */
-void hd44780ReturnHome();
+void hd44780ReturnHome(Hd44780Ports *ports);
 
 /*
  * Sets entry mode:
@@ -113,7 +97,7 @@ void hd44780ReturnHome();
  * The display does not shift when reading from DDRAM.
  * Also, writing into or reading out from CGRAM does not shift the display.
  */
-void hd44780EntryModeSet(bool shiftScreen, Hd44780AddressShiftDirection addressShiftDirection);
+void hd44780EntryModeSet(bool shiftScreen, Hd44780AddressShiftDirection addressShiftDirection, Hd44780Ports *ports);
 
 /*
  * Controls display:
@@ -131,7 +115,7 @@ void hd44780EntryModeSet(bool shiftScreen, Hd44780AddressShiftDirection addressS
  * - displayOn - The display is on when set to true and off when set to false.
  * When off, the display data remains in DDRAM, but can be displayed instantly by setting displayOn to true.
  */
-void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn);
+void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displayOn, Hd44780Ports *ports);
 
 /*
  * Shifts the cursor position or display to the right or left without writing or reading display data.
@@ -142,29 +126,29 @@ void hd44780DisplayOnOffControl(bool cursorBlinking, bool showCursor, bool displ
  * The second line display does not shift into the first line position.
  * The address counter contents will not change if the only action performed is a display shift.
  */
-void hd44780CursorOrDisplayShift(Hd44780ShiftDirection shiftDirection, Hd44780ShiftMode shiftMode);
+void hd44780CursorOrDisplayShift(Hd44780ShiftDirection shiftDirection, Hd44780ShiftMode shiftMode, Hd44780Ports *ports);
 
 /*
  * Sets the DDRAM address into the address counter. Data is then written to or read from the MPU for DDRAM.
  * For 1-line display, address can be 0x0 to 0x4f.
  * For 2-line display, address can be 0x0 to 0x27 for the first line, and 0x40 to 0x67.
  */
-void hd44780SetDdramAddress(uint8_t address);
+void hd44780SetDdramAddress(uint8_t address, Hd44780Ports *ports);
 
 /*
  * Sets the CGRAM address into the address counter. Data is then written to or read from the MPU for CGRAM.
  */
-void hd44780SetCgramAddress(uint8_t address);
+void hd44780SetCgramAddress(uint8_t address, Hd44780Ports *ports);
 
 /*
  * Writes data into DDRAM or CGRAM. The data can be a character or raw bytes.
  */
-void hd44780SendData(uint8_t data);
+void hd44780SendData(uint8_t data, Hd44780Ports *ports);
 
 /*
  * Writes array of characters.
  */
-void hd44780SendString(char *string);
+void hd44780SendString(char *string, Hd44780Ports *ports);
 
 /*
  * Reads the busy flag (7th bit) indicating that the system is now internally operating
@@ -177,11 +161,11 @@ void hd44780SendString(char *string);
  * This address counter is used by both CG and DDRAM addresses, and its value is determined by the previous instruction.
  * The address contents are the same as for instructions set CGRAM address and set DDRAM address.
  */
-uint8_t hd44780ReadBusyFlagAndAddress();
+uint8_t hd44780ReadBusyFlagAndAddress(Hd44780Ports *ports);
 
 /*
  * Reads data from DDRAM or CGRAM.
  */
-uint8_t hd44780ReadData();
+uint8_t hd44780ReadData(Hd44780Ports *ports);
 
 #endif //AVR_HD44780_HD44780_H
