@@ -5,7 +5,7 @@ This library supports 8-bit and 4-bit operation mode.
 You can use any port on your AVR microcontroller
 
 ### Example
-This example shows 8-bit operation mode.
+This example shows 4-bit operation mode.
 
 ```
 Hd44780Port portRs = {&DDRA, &PORTA, &PINA, PIN0};
