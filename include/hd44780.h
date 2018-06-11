@@ -20,10 +20,10 @@ typedef struct Hd44780Ports {
     Hd44780Port *portRs;
     Hd44780Port *portRw;
     Hd44780Port *portE;
-    Hd44780Port *portD0; // optional if using 4-bit mode
-    Hd44780Port *portD1; // optional if using 4-bit mode
-    Hd44780Port *portD2; // optional if using 4-bit mode
-    Hd44780Port *portD3; // optional if using 4-bit mode
+    Hd44780Port *portD0; // not needed for 4-bit mode
+    Hd44780Port *portD1; // not needed for 4-bit mode
+    Hd44780Port *portD2; // not needed for 4-bit mode
+    Hd44780Port *portD3; // not needed for 4-bit mode
     Hd44780Port *portD4;
     Hd44780Port *portD5;
     Hd44780Port *portD6;
