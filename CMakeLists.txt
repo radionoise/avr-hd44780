@@ -6,4 +6,4 @@ set(CMAKE_RANLIB avr-ranlib)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 include_directories(include)
-add_library(avr-hd44780 src/hd44780.c)
+add_library(avr-hd44780 src/hd44780.c include/hd44780.h)
