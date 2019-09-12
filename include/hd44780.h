@@ -1,6 +1,7 @@
 /*
  * HD44780 library for AVR.
  * Supports 8-bit and 4-bit operation mode.
+ * Version 2.0.0
  */
 
 #ifndef AVR_HD44780_HD44780_H
